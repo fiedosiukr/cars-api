@@ -1,0 +1,26 @@
+version: '3.9'
+
+volumes:
+  db-data:
+
+services:
+  backend:
+    container_name: backend
+    build: .
+    env_file:
+      - .env
+    volumes:
+      - ./:/code
+    ports:
+      - '8000:8000'
+    entrypoint: ./docker/dev-entrypoint.sh
+    command: ['python', 'manage.py', 'runserver', '0.0.0.0:8000']
+    depends_on:
+      - database
+  database:
+    image: postgres:14.0
+    container_name: database
+    env_file:
+      - .env
+    volumes:
+      - db-data:/var/lib/postgresql/data
